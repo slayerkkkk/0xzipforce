@@ -77,5 +77,3 @@ This tool was written from scratch with a focus on **speed and accuracy**, using
 🥷 Slayer  
 🔗 [pwnbuffer.org](https://pwnbuffer.org)  
 🐧 Free code is free knowledge.
-
----
