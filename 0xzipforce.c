@@ -39,6 +39,38 @@ void banner() {
     printf("\033[0m");
 }
 
+void check_zipcrypto_support(const char *zip_path) {
+    int err = 0;
+    zip_t *za = zip_open(zip_path, 0, &err);
+    if (!za) {
+        fprintf(stderr, "\033[1;31m[-] Failed to open zip: %s\033[0m\n", zip_path);
+        exit(1);
+    }
+
+    zip_int64_t num_entries = zip_get_num_entries(za, 0);
+    if (num_entries <= 0) {
+        fprintf(stderr, "\033[1;31m[-] No files found in zip.\033[0m\n");
+        zip_close(za);
+        exit(1);
+    }
+
+    struct zip_stat zs;
+    if (zip_stat_index(za, 0, 0, &zs) == 0) {
+        if ((zs.valid & ZIP_STAT_ENCRYPTION_METHOD) && zs.encryption_method != ZIP_EM_TRAD_PKWARE) {
+            fprintf(stderr, "\033[1;31m[-] This zip is NOT using ZipCrypto (method ID: %u).\033[0m\n", zs.encryption_method);
+            fprintf(stderr, "\033[1;31m[-] Only ZipCrypto is supported by 0xzipforce.\033[0m\n");
+            zip_close(za);
+            exit(1);
+        }
+    } else {
+        fprintf(stderr, "\033[1;31m[-] Could not read zip file metadata.\033[0m\n");
+        zip_close(za);
+        exit(1);
+    }
+
+    zip_close(za);
+}
+
 int validate_pass(const char *password) {
     int err = 0;
     zip_t *za = zip_open(target_zip, 0, &err);
@@ -134,6 +166,13 @@ int main(int argc, char *argv[]) {
     if (!target_zip || !wordlist_path) {
         usage(argv[0]);
     }
+
+    if (access(target_zip, F_OK) != 0) {
+        fprintf(stderr, "\033[1;31m[-] ZIP file not found: %s\033[0m\n", target_zip);
+        exit(1);
+    }
+
+    check_zipcrypto_support(target_zip);
 
     banner();
     printf("\033[1;33m[0xzipforce] Brute Forcing ZIP: %s\033[0m\n", target_zip);
