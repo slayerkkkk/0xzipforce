@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.discordapp.com/attachments/1358078757797101628/1358458283555295383/image.png?ex=67f3ea5d&is=67f298dd&hm=57f19698b3be97ef09f4d113a9b72f0d3e502f3c623dd3ba0e09a6ae9633b53d&"/>
+  <img src="https://raw.githubusercontent.com/slayerkkkk/0xzipforce/refs/heads/main/0xZipForce.gif"/>
 </p>
 
 
